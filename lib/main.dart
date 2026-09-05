@@ -17,7 +17,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
-      title: 'Lịch & Chi tiêu',
+      title: 'DUYNH',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
   flutter_local_notifications: ^22.3.0
   get: ^4.7.3
   get_storage: ^2.1.1
@@ -24,3 +25,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/appicon.jpg"

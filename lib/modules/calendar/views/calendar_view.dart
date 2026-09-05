@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../core/utils/date_utils.dart';
-import '../../../core/utils/notification_service.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../controllers/calendar_controller.dart';
 import 'widgets/add_event_sheet.dart';
@@ -17,13 +16,6 @@ class CalendarView extends GetView<CalendarController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lịch'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () =>
-                NotificationService.instance.showTestNotification(),
-          ),
-        ],
       ),
       body: Obx(
         () => Column(

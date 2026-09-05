@@ -58,6 +58,8 @@ class NotificationService {
       channelDescription: 'Thông báo nhắc nhở sự kiện trong lịch',
       importance: Importance.high,
       priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('noti'),
     );
     const details = NotificationDetails(
         android: androidDetails, iOS: DarwinNotificationDetails());
@@ -69,7 +71,7 @@ class NotificationService {
         body: body,
         scheduledDate: tz.TZDateTime.from(dateTime, tz.local),
         notificationDetails: details,
-        androidScheduleMode: AndroidScheduleMode.alarmClock,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
       debugPrint(
           '✅ Đã lên lịch thông báo id=$id lúc: ${tz.TZDateTime.from(dateTime, tz.local)}');
@@ -80,21 +82,4 @@ class NotificationService {
   }
 
   Future<void> cancel(int id) => _plugin.cancel(id: id);
-
-  Future<void> showTestNotification() async {
-    const androidDetails = AndroidNotificationDetails(
-      'event_channel',
-      'Nhắc lịch sự kiện',
-      channelDescription: 'Thông báo nhắc nhở sự kiện trong lịch',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-    const details = NotificationDetails(
-        android: androidDetails, iOS: DarwinNotificationDetails());
-    await _plugin.show(
-        id: 9999,
-        title: 'Test thông báo',
-        body: 'Nếu thấy cái này là notification pipeline hoạt động ổn',
-        notificationDetails: details);
-  }
 }
