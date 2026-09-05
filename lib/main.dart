@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
-  runApp(const MainApp());
-}
+import 'core/theme/app_theme.dart';
+import 'core/utils/notification_service.dart';
+import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+  await GetStorage.init();
+  await initializeDateFormatting('vi_VN', null);
+  await NotificationService.instance.init();
+
+  runApp(
+    GetMaterialApp(
+      title: 'Lịch & Chi tiêu',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      locale: const Locale('vi', 'VN'),
+      initialRoute: Routes.NAV,
+      getPages: AppPages.routes,
+    ),
+  );
 }

@@ -7,8 +7,6 @@
 .buildlog/
 .history
 
-
-
 # Flutter repo-specific
 /bin/cache/
 /bin/internal/bootstrap.bat
@@ -32,6 +30,7 @@ analysis_benchmark.json
 .packages.generated
 .idea/
 *.iml
+*.fvmrc
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -119,3 +118,6 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+
+# FVM Version Cache
+.fvm/
