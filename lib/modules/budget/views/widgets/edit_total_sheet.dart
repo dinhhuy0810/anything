@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/values/app_colors.dart';
+import '../../../../core/widgets/gradient_button.dart';
+import '../../../../core/widgets/pill_tab_bar.dart';
 import '../../controllers/budget_controller.dart';
 
 enum _Mode { addFunds, setExact }
@@ -13,6 +15,7 @@ class EditTotalSheet extends StatefulWidget {
 
   static Future<void> show({bool addFunds = true}) {
     return Get.bottomSheet(
+      backgroundColor: AppColors.surface,
       EditTotalSheet(startWithAddFunds: addFunds),
       isScrollControlled: true,
     );
@@ -65,13 +68,10 @@ class _EditTotalSheetState extends State<EditTotalSheet> {
               style: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
-            SegmentedButton<_Mode>(
-              segments: const [
-                ButtonSegment(value: _Mode.addFunds, label: Text('Nạp thêm'), icon: Icon(Icons.add)),
-                ButtonSegment(value: _Mode.setExact, label: Text('Đặt lại số'), icon: Icon(Icons.edit)),
-              ],
-              selected: {_mode},
-              onSelectionChanged: (s) => setState(() => _mode = s.first),
+            PillTabBar(
+              tabs: const ['Nạp thêm', 'Đặt lại số'],
+              selectedIndex: _mode == _Mode.addFunds ? 0 : 1,
+              onChanged: (i) => setState(() => _mode = i == 0 ? _Mode.addFunds : _Mode.setExact),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -88,7 +88,8 @@ class _EditTotalSheetState extends State<EditTotalSheet> {
               decoration: const InputDecoration(labelText: 'Ghi chú (không bắt buộc)'),
             ),
             const SizedBox(height: 18),
-            ElevatedButton(
+            GradientButton(
+              label: 'Xác nhận',
               onPressed: () async {
                 final value = double.tryParse(_amountCtrl.text.trim());
                 if (value == null) {
@@ -107,7 +108,6 @@ class _EditTotalSheetState extends State<EditTotalSheet> {
                 }
                 if (context.mounted) Get.back();
               },
-              child: const Text('Xác nhận'),
             ),
           ],
         ),

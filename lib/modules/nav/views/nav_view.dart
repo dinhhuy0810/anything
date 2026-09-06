@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/values/app_colors.dart';
+import '../../../core/widgets/floating_nav_bar.dart';
 import '../../budget/views/budget_view.dart';
 import '../../calendar/views/calendar_view.dart';
 import '../../downloader/views/downloader_view.dart';
@@ -13,6 +15,7 @@ class NavView extends GetView<NavController> {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
+        backgroundColor: AppColors.background,
         body: IndexedStack(
           index: controller.currentIndex.value,
           children: const [
@@ -21,23 +24,23 @@ class NavView extends GetView<NavController> {
             DownloaderView(),
           ],
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: controller.currentIndex.value,
-          onDestinationSelected: controller.changeTab,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.calendar_month_outlined),
-              selectedIcon: Icon(Icons.calendar_month),
+        bottomNavigationBar: FloatingNavBar(
+          currentIndex: controller.currentIndex.value,
+          onTap: controller.changeTab,
+          items: const [
+            FloatingNavItem(
+              icon: Icons.calendar_month_outlined,
+              selectedIcon: Icons.calendar_month_rounded,
               label: 'Lịch',
             ),
-            NavigationDestination(
-              icon: Icon(Icons.account_balance_wallet_outlined),
-              selectedIcon: Icon(Icons.account_balance_wallet),
+            FloatingNavItem(
+              icon: Icons.account_balance_wallet_outlined,
+              selectedIcon: Icons.account_balance_wallet_rounded,
               label: 'Ngân sách',
             ),
-            NavigationDestination(
-              icon: Icon(Icons.download_outlined),
-              selectedIcon: Icon(Icons.download),
+            FloatingNavItem(
+              icon: Icons.download_outlined,
+              selectedIcon: Icons.download_rounded,
               label: 'Tải video',
             ),
           ],

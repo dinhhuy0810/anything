@@ -15,6 +15,7 @@ class BudgetController extends GetxController {
   final totalAmount = 0.0.obs;
   final categories = <BudgetCategoryModel>[].obs;
   final history = <BudgetHistoryEntry>[].obs;
+  final tabIndex = 0.obs;
 
   @override
   void onInit() {

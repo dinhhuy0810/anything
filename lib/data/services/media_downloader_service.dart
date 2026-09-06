@@ -50,10 +50,15 @@ class MediaDownloaderService {
       throw Exception('Link không hợp lệ. Vui lòng dán link TikTok hoặc Douyin.');
     }
 
-    final response = await _dio.get(_endpoint, queryParameters: {
-      'url': url,
-      'hd': 1,
-    });
+    late Response response;
+    try {
+      response = await _dio.get(_endpoint, queryParameters: {
+        'url': url,
+        'hd': 1,
+      });
+    } on DioException catch (e) {
+      throw Exception(_friendlyDioError(e));
+    }
 
     final body = response.data;
     Map<String, dynamic> json;
@@ -103,11 +108,44 @@ class MediaDownloaderService {
     String savePath, {
     void Function(int received, int total)? onProgress,
   }) async {
-    await _dio.download(
-      url,
-      savePath,
-      onReceiveProgress: onProgress,
-      options: Options(responseType: ResponseType.bytes),
-    );
+    try {
+      await _dio.download(
+        url,
+        savePath,
+        onReceiveProgress: onProgress,
+        options: Options(responseType: ResponseType.bytes),
+      );
+    } on DioException catch (e) {
+      throw Exception(_friendlyDioError(e));
+    }
+  }
+
+  /// Chuyển lỗi kỹ thuật của Dio thành thông báo tiếng Việt dễ hiểu, kèm
+  /// gợi ý khắc phục cho những lỗi mạng phổ biến nhất (mất mạng, thiếu quyền
+  /// INTERNET, DNS/host lookup thất bại, timeout...).
+  String _friendlyDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionError:
+        return 'Không kết nối được tới máy chủ (DNS/host lookup thất bại). '
+            'Vui lòng kiểm tra: thiết bị có Internet không, app đã khai báo quyền '
+            '"android.permission.INTERNET" trong AndroidManifest.xml chưa, và thử '
+            'đổi sang mạng khác (vd. 4G) nếu Wi-Fi/DNS hiện tại đang chặn tikwm.com.';
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return 'Kết nối quá thời gian chờ — mạng có thể yếu hoặc máy chủ đang chậm. '
+            'Vui lòng thử lại sau ít phút.';
+      case DioExceptionType.badResponse:
+        return 'Máy chủ trả về lỗi (mã ${e.response?.statusCode}). Vui lòng thử lại sau.';
+      case DioExceptionType.cancel:
+        return 'Yêu cầu đã bị hủy.';
+      case DioExceptionType.badCertificate:
+        return 'Chứng chỉ bảo mật của máy chủ không hợp lệ.';
+      case DioExceptionType.unknown:
+        return 'Không có kết nối mạng hoặc bị chặn. Vui lòng kiểm tra Internet rồi thử lại.';
+      case DioExceptionType.transformTimeout:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+    }
   }
 }

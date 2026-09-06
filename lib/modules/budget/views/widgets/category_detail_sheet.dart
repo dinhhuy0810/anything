@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/values/app_colors.dart';
+import '../../../../core/widgets/gradient_button.dart';
+import '../../../../core/widgets/soft_button.dart';
 import '../../../../data/models/budget_category_model.dart';
 import '../../controllers/budget_controller.dart';
 import 'add_category_sheet.dart';
@@ -15,6 +17,7 @@ class CategoryDetailSheet extends StatefulWidget {
 
   static Future<void> show(BudgetCategoryModel category) {
     return Get.bottomSheet(
+      backgroundColor: AppColors.surface,
       CategoryDetailSheet(category: category),
       isScrollControlled: true,
       ignoreSafeArea: false,
@@ -143,32 +146,32 @@ class _CategoryDetailSheetState extends State<CategoryDetailSheet> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final value = double.tryParse(_allocateCtrl.text.trim());
-                      if (value == null || value < 0) {
-                        Get.snackbar('Không hợp lệ', 'Vui lòng nhập số tiền hợp lệ');
-                        return;
-                      }
-                      if (value > availableToAllocate) {
-                        Get.snackbar('Vượt quỹ', 'Quỹ chưa phân bổ không đủ');
-                        return;
-                      }
-                      await controller.allocate(cat, value);
-                    },
-                    style: ElevatedButton.styleFrom(minimumSize: const Size(0, 52)),
-                    child: const Text('Cập nhật'),
+                  SizedBox(
+                    width: 108,
+                    child: GradientButton(
+                      label: 'Cập nhật',
+                      fullWidth: false,
+                      onPressed: () async {
+                        final value = double.tryParse(_allocateCtrl.text.trim());
+                        if (value == null || value < 0) {
+                          Get.snackbar('Không hợp lệ', 'Vui lòng nhập số tiền hợp lệ');
+                          return;
+                        }
+                        if (value > availableToAllocate) {
+                          Get.snackbar('Vượt quỹ', 'Quỹ chưa phân bổ không đủ');
+                          return;
+                        }
+                        await controller.allocate(cat, value);
+                      },
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () => AddExpenseSheet.show(category: cat),
-                  icon: const Icon(Icons.add_shopping_cart_rounded),
-                  label: const Text('Thêm khoản chi cho mục này'),
-                ),
+              SoftButton(
+                label: 'Thêm khoản chi cho mục này',
+                icon: Icons.add_shopping_cart_rounded,
+                onPressed: () => AddExpenseSheet.show(category: cat),
               ),
               const SizedBox(height: 20),
               const Text('Lịch sử của mục này', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),

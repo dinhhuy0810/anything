@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/values/app_colors.dart';
+import '../../../../core/widgets/gradient_button.dart';
 import '../../../../data/models/budget_category_model.dart';
 import '../../controllers/budget_controller.dart';
 
@@ -12,6 +13,7 @@ class AddExpenseSheet extends StatefulWidget {
 
   static Future<void> show({BudgetCategoryModel? category}) {
     return Get.bottomSheet(
+      backgroundColor: AppColors.surface,
       AddExpenseSheet(initialCategory: category),
       isScrollControlled: true,
     );
@@ -140,7 +142,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                 decoration: const InputDecoration(labelText: 'Ghi chú (không bắt buộc)'),
               ),
               const SizedBox(height: 18),
-              ElevatedButton(
+              GradientButton(
+                label: 'Lưu khoản chi',
                 onPressed: () async {
                   final amt = double.tryParse(_amountCtrl.text.trim());
                   if (_titleCtrl.text.trim().isEmpty || amt == null || amt <= 0) {
@@ -156,7 +159,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                   );
                   if (context.mounted) Get.back();
                 },
-                child: const Text('Lưu khoản chi'),
               ),
             ],
           );

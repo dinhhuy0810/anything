@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/values/app_colors.dart';
+import '../../../../core/widgets/gradient_button.dart';
 import '../../../../data/models/calendar_event_model.dart';
 import '../../controllers/calendar_controller.dart';
 
@@ -13,12 +15,9 @@ class AddEventSheet extends StatefulWidget {
 
   static Future<void> show(DateTime date, {CalendarEventModel? existing}) {
     return Get.bottomSheet(
+      backgroundColor: AppColors.surface,
       AddEventSheet(date: date, existing: existing),
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
     );
   }
 
@@ -31,18 +30,9 @@ class _AddEventSheetState extends State<AddEventSheet> {
   final _noteCtrl = TextEditingController();
   bool _hasTime = false;
   TimeOfDay _time = TimeOfDay.now();
-  Color _color = Colors.blue;
+  Color _color = AppColors.categoryPalette.first;
   bool _reminderEnabled = false;
   int _reminderMinutes = 30;
-
-  final _colors = const [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.teal,
-  ];
 
   @override
   void initState() {
@@ -72,10 +62,10 @@ class _AddEventSheetState extends State<AddEventSheet> {
 
     return Padding(
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
+        left: 20,
+        right: 20,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -87,82 +77,89 @@ class _AddEventSheetState extends State<AddEventSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(2)),
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              widget.existing == null ? 'Thêm sự kiện / đánh dấu ngày' : 'Sửa sự kiện',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              widget.existing == null
+                  ? 'Thêm sự kiện / đánh dấu ngày'
+                  : 'Sửa sự kiện',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             TextField(
               controller: _titleCtrl,
-              decoration: const InputDecoration(labelText: 'Tiêu đề', border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Tiêu đề'),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _noteCtrl,
               maxLines: 2,
-              decoration: const InputDecoration(
-                labelText: 'Ghi chú (không bắt buộc)',
-                border: OutlineInputBorder(),
-              ),
+              decoration:
+                  const InputDecoration(labelText: 'Ghi chú (không bắt buộc)'),
             ),
-            const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Đặt giờ cụ thể'),
+            const SizedBox(height: 6),
+            _softSwitchTile(
+              title: 'Đặt giờ cụ thể',
               value: _hasTime,
               onChanged: (v) => setState(() => _hasTime = v),
             ),
-            if (_hasTime)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Giờ diễn ra'),
+            if (_hasTime) ...[
+              const SizedBox(height: 6),
+              _rowTile(
+                title: 'Giờ diễn ra',
                 trailing: TextButton(
                   onPressed: () async {
-                    final picked = await showTimePicker(context: context, initialTime: _time);
+                    final picked = await showTimePicker(
+                        context: context, initialTime: _time);
                     if (picked != null) setState(() => _time = picked);
                   },
                   child: Text(_time.format(context)),
                 ),
               ),
-            const SizedBox(height: 8),
-            const Text('Màu đánh dấu', style: TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            Row(
-              children: _colors.map((c) {
+            ],
+            const SizedBox(height: 14),
+            const Text('Màu đánh dấu',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: AppColors.categoryPalette.map((c) {
                 final selected = c.value == _color.value;
                 return GestureDetector(
                   onTap: () => setState(() => _color = c),
                   child: Container(
-                    margin: const EdgeInsets.only(right: 10),
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
                       color: c,
                       shape: BoxShape.circle,
-                      border: selected ? Border.all(width: 3, color: Colors.black26) : null,
+                      border: selected
+                          ? Border.all(color: AppColors.textPrimary, width: 2)
+                          : null,
                     ),
+                    child: selected
+                        ? const Icon(Icons.check, color: Colors.white, size: 16)
+                        : null,
                   ),
                 );
               }).toList(),
             ),
-            const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Nhắc nhở'),
-              subtitle: const Text('Gửi thông báo trước khi sự kiện diễn ra'),
+            const SizedBox(height: 6),
+            _softSwitchTile(
+              title: 'Nhắc nhở',
+              subtitle: 'Gửi thông báo trước khi sự kiện diễn ra',
               value: _reminderEnabled,
               onChanged: (v) => setState(() => _reminderEnabled = v),
             ),
-            if (_reminderEnabled)
+            if (_reminderEnabled) ...[
+              const SizedBox(height: 12),
               DropdownButtonFormField<int>(
                 value: _reminderMinutes,
-                decoration: const InputDecoration(labelText: 'Nhắc trước', border: OutlineInputBorder()),
+                decoration: const InputDecoration(labelText: 'Nhắc trước'),
                 items: const [
                   DropdownMenuItem(value: 0, child: Text('Đúng giờ')),
                   DropdownMenuItem(value: 15, child: Text('15 phút trước')),
@@ -172,32 +169,77 @@ class _AddEventSheetState extends State<AddEventSheet> {
                 ],
                 onChanged: (v) => setState(() => _reminderMinutes = v ?? 30),
               ),
+            ],
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (_titleCtrl.text.trim().isEmpty) {
-                    Get.snackbar('Thiếu tiêu đề', 'Vui lòng nhập tiêu đề sự kiện');
-                    return;
-                  }
-                  await controller.addOrUpdateEvent(
-                    id: widget.existing?.id,
-                    date: widget.date,
-                    title: _titleCtrl.text.trim(),
-                    note: _noteCtrl.text.trim(),
-                    hasTime: _hasTime,
-                    time: _hasTime ? _time : null,
-                    colorValue: _color.value,
-                    reminderEnabled: _reminderEnabled,
-                    reminderMinutesBefore: _reminderMinutes,
-                  );
-                  if (context.mounted) Get.back();
-                },
-                child: const Text('Lưu'),
-              ),
+            GradientButton(
+              label: 'Lưu',
+              onPressed: () async {
+                if (_titleCtrl.text.trim().isEmpty) {
+                  Get.snackbar(
+                      'Thiếu tiêu đề', 'Vui lòng nhập tiêu đề sự kiện');
+                  return;
+                }
+                await controller.addOrUpdateEvent(
+                  id: widget.existing?.id,
+                  date: widget.date,
+                  title: _titleCtrl.text.trim(),
+                  note: _noteCtrl.text.trim(),
+                  hasTime: _hasTime,
+                  time: _hasTime ? _time : null,
+                  colorValue: _color.value,
+                  reminderEnabled: _reminderEnabled,
+                  reminderMinutesBefore: _reminderMinutes,
+                );
+                if (context.mounted) Get.back();
+              },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _softSwitchTile({
+    required String title,
+    String? subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Material(
+      color: AppColors.surfaceMuted,
+      borderRadius: BorderRadius.circular(14),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          activeColor: AppColors.primary,
+          title: Text(title,
+              style:
+                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
+          subtitle: subtitle == null
+              ? null
+              : Text(subtitle, style: const TextStyle(fontSize: 11.5)),
+          value: value,
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+
+  Widget _rowTile({required String title, required Widget trailing}) {
+    return Material(
+      color: AppColors.surfaceMuted,
+      borderRadius: BorderRadius.circular(14),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(title,
+              style:
+                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
+          trailing: trailing,
         ),
       ),
     );

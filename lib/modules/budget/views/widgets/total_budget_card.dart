@@ -87,16 +87,29 @@ class TotalBudgetCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: onAddFunds,
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label: const Text('Nạp thêm quỹ', style: TextStyle(color: Colors.white)),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.white54),
-                minimumSize: const Size.fromHeight(44),
-                foregroundColor: Colors.white,
+          Material(
+            color: Colors.white.withOpacity(0.16),
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: onAddFunds,
+              child: Container(
+                height: 44,
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.white38),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add_rounded, color: Colors.white, size: 18),
+                    SizedBox(width: 6),
+                    Text('Nạp thêm quỹ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13.5)),
+                  ],
+                ),
               ),
             ),
           ),

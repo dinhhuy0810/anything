@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/values/app_colors.dart';
+import '../../../core/widgets/app_header.dart';
 import '../../../core/widgets/empty_state_widget.dart';
+import '../../../core/widgets/gradient_fab.dart';
+import '../../../core/widgets/pill_tab_bar.dart';
 import '../../../core/widgets/section_title.dart';
 import '../controllers/budget_controller.dart';
 import 'widgets/add_category_sheet.dart';
@@ -18,33 +21,39 @@ class BudgetView extends GetView<BudgetController> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Ngân sách'),
-          bottom: const TabBar(
-            labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.textSecondary,
-            indicatorColor: AppColors.primary,
-            labelStyle: TextStyle(fontWeight: FontWeight.w700),
-            tabs: [
-              Tab(text: 'Hạng mục'),
-              Tab(text: 'Lịch sử'),
-            ],
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Column(
+        children: [
+          Obx(
+            () => AppHeader(
+              title: 'Ngân sách',
+              subtitle: 'Quản lý quỹ & chi tiêu của bạn',
+              bottom: PillTabBar(
+                tabs: const ['Hạng mục', 'Lịch sử'],
+                selectedIndex: controller.tabIndex.value,
+                onChanged: (i) => controller.tabIndex.value = i,
+              ),
+            ),
           ),
-        ),
-        body: const TabBarView(
-          children: [
-            _CategoriesTab(),
-            _HistoryTab(),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => AddExpenseSheet.show(),
-          icon: const Icon(Icons.add_rounded),
-          label: const Text('Ghi chi tiêu'),
-        ),
+          Expanded(
+            child: Obx(
+              () => IndexedStack(
+                index: controller.tabIndex.value,
+                sizing: StackFit.expand,
+                children: const [
+                  _CategoriesTab(),
+                  _HistoryTab(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: GradientFab(
+        onPressed: () => AddExpenseSheet.show(),
+        icon: Icons.add_rounded,
+        label: 'Ghi chi tiêu',
       ),
     );
   }
@@ -57,7 +66,7 @@ class _CategoriesTab extends GetView<BudgetController> {
   Widget build(BuildContext context) {
     return Obx(
       () => ListView(
-        padding: const EdgeInsets.only(bottom: 100),
+        padding: const EdgeInsets.only(bottom: 110),
         children: [
           TotalBudgetCard(
             total: controller.totalAmount.value,
@@ -107,7 +116,7 @@ class _HistoryTab extends GetView<BudgetController> {
         );
       }
       return ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 110),
         itemCount: controller.history.length,
         itemBuilder: (context, index) {
           final entry = controller.history[index];

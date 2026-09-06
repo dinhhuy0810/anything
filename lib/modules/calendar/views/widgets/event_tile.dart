@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/date_utils.dart';
+import '../../../../core/values/app_colors.dart';
 import '../../../../data/models/calendar_event_model.dart';
 
 class EventTile extends StatelessWidget {
@@ -22,24 +23,55 @@ class EventTile extends StatelessWidget {
       if (event.note != null && event.note!.isNotEmpty) event.note!,
     ];
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: ListTile(
-        onTap: onTap,
-        leading: CircleAvatar(backgroundColor: event.color, radius: 8),
-        title: Text(event.title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: subtitleParts.isEmpty ? null : Text(subtitleParts.join(' • ')),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
           children: [
+            Container(
+              width: 10,
+              height: 10,
+              margin: const EdgeInsets.only(right: 4),
+              decoration: BoxDecoration(color: event.color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(event.title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
+                  if (subtitleParts.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitleParts.join(' • '),
+                      style: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600, fontSize: 11.5),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
+            ),
             if (event.reminderEnabled)
               const Padding(
                 padding: EdgeInsets.only(right: 4),
-                child: Icon(Icons.notifications_active, size: 18, color: Colors.orange),
+                child: Icon(Icons.notifications_active_rounded, size: 18, color: AppColors.warning),
               ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-              onPressed: onDelete,
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: onDelete,
+              child: const Padding(
+                padding: EdgeInsets.all(6),
+                child: Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 20),
+              ),
             ),
           ],
         ),

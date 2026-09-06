@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/values/app_colors.dart';
 import '../../../../core/values/budget_icons.dart';
+import '../../../../core/widgets/gradient_button.dart';
 import '../../../../data/models/budget_category_model.dart';
 import '../../controllers/budget_controller.dart';
 
@@ -12,6 +13,7 @@ class AddCategorySheet extends StatefulWidget {
 
   static Future<void> show({BudgetCategoryModel? editing}) {
     return Get.bottomSheet(
+      backgroundColor: AppColors.surface,
       AddCategorySheet(editing: editing),
       isScrollControlled: true,
     );
@@ -124,7 +126,8 @@ class _AddCategorySheetState extends State<AddCategorySheet> {
               }).toList(),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            GradientButton(
+              label: isEditing ? 'Lưu thay đổi' : 'Thêm hạng mục',
               onPressed: () async {
                 final name = _nameCtrl.text.trim();
                 if (name.isEmpty) {
@@ -138,7 +141,6 @@ class _AddCategorySheetState extends State<AddCategorySheet> {
                 }
                 if (context.mounted) Get.back();
               },
-              child: Text(isEditing ? 'Lưu thay đổi' : 'Thêm hạng mục'),
             ),
           ],
         ),

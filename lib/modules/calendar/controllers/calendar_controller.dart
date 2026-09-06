@@ -39,6 +39,20 @@ class CalendarController extends GetxController {
     focusedDay.value = focused;
   }
 
+  /// Đưa lịch quay về đúng ngày hôm nay (dùng cho nút "về hôm nay").
+  void goToToday() {
+    final now = DateTime.now();
+    focusedDay.value = now;
+    selectedDay.value = now;
+  }
+
+  /// True nếu tháng đang xem trên lịch chính là tháng hiện tại — dùng để
+  /// ẩn/hiện nút "về hôm nay" cho đỡ rối khi không cần thiết.
+  bool get isViewingCurrentMonth {
+    final now = DateTime.now();
+    return focusedDay.value.year == now.year && focusedDay.value.month == now.month;
+  }
+
   Future<void> addOrUpdateEvent({
     String? id,
     required DateTime date,
