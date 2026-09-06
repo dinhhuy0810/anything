@@ -56,10 +56,10 @@ class NotificationService {
       'event_channel',
       'Nhắc lịch sự kiện',
       channelDescription: 'Thông báo nhắc nhở sự kiện trong lịch',
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound('noti'),
+      importance: Importance.max,
+      // priority: Priority.max,
+      // playSound: true,
+      // sound: RawResourceAndroidNotificationSound('noti'),
     );
     const details = NotificationDetails(
         android: androidDetails, iOS: DarwinNotificationDetails());

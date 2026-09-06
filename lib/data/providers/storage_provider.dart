@@ -17,4 +17,21 @@ class StorageProvider {
   Future<void> writeList(String key, List<Map<String, dynamic>> list) {
     return _box.write(key, jsonEncode(list));
   }
+
+  double readDouble(String key, {double fallback = 0}) {
+    final v = _box.read(key);
+    if (v == null) return fallback;
+    if (v is num) return v.toDouble();
+    return double.tryParse(v.toString()) ?? fallback;
+  }
+
+  Future<void> writeDouble(String key, double value) {
+    return _box.write(key, value);
+  }
+
+  String? readString(String key) => _box.read<String>(key);
+
+  Future<void> writeString(String key, String value) {
+    return _box.write(key, value);
+  }
 }

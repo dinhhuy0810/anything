@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../budget/views/budget_view.dart';
 import '../../calendar/views/calendar_view.dart';
-import '../../expense/views/expense_view.dart';
+import '../../downloader/views/downloader_view.dart';
 import '../controllers/nav_controller.dart';
 
 class NavView extends GetView<NavController> {
@@ -16,7 +17,8 @@ class NavView extends GetView<NavController> {
           index: controller.currentIndex.value,
           children: const [
             CalendarView(),
-            ExpenseView(),
+            BudgetView(),
+            DownloaderView(),
           ],
         ),
         bottomNavigationBar: NavigationBar(
@@ -31,7 +33,12 @@ class NavView extends GetView<NavController> {
             NavigationDestination(
               icon: Icon(Icons.account_balance_wallet_outlined),
               selectedIcon: Icon(Icons.account_balance_wallet),
-              label: 'Chi tiêu',
+              label: 'Ngân sách',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.download_outlined),
+              selectedIcon: Icon(Icons.download),
+              label: 'Tải video',
             ),
           ],
         ),
